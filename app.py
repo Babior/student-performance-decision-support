@@ -116,6 +116,17 @@ elif selected_page == "Student Prediction":
         submitted = st.form_submit_button("Generate Prediction")
 
     if submitted:
+        if (
+        school == "Select an option"
+        or sex == "Select an option"
+        or study_time == "Select an option"
+    ):
+            st.error(
+            "Please complete all required fields before generating a prediction."
+        )
+        else:
+            st.success("Student information submitted successfully.")
+
         st.warning(
             """
             Prediction is not yet available because the final trained model
