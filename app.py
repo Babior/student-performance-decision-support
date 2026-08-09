@@ -45,18 +45,93 @@ if selected_page == "Home":
     )
 
 
-# Display the Student Prediction page.
 elif selected_page == "Student Prediction":
     st.title("Student Prediction")
 
     st.write(
         """
-        Enter selected student information to estimate whether the student
-        may require and benefit from additional academic support.
+        Enter student information below to estimate whether the student
+        may benefit from additional academic support.
         """
     )
 
-    st.warning("The prediction form will be added in the next stage.")
+    st.info(
+        """
+        The prediction form is being prepared for integration with the
+        final trained machine-learning pipeline.
+        """
+    )
+
+    st.subheader("Student Information")
+
+    with st.form("student_prediction_form"):
+        col1, col2 = st.columns(2)
+
+        with col1:
+            school = st.selectbox(
+                "School",
+                ["Select an option", "GP", "MS"],
+            )
+
+            sex = st.selectbox(
+                "Sex",
+                ["Select an option", "Female", "Male"],
+            )
+
+            age = st.number_input(
+                "Age",
+                min_value=15,
+                max_value=22,
+                value=17,
+                step=1,
+            )
+
+        with col2:
+            study_time = st.selectbox(
+                "Weekly Study Time",
+                [
+                    "Select an option",
+                    "Less than 2 hours",
+                    "2 to 5 hours",
+                    "5 to 10 hours",
+                    "More than 10 hours",
+                ],
+            )
+
+            failures = st.number_input(
+                "Number of Previous Class Failures",
+                min_value=0,
+                max_value=4,
+                value=0,
+                step=1,
+            )
+
+            absences = st.number_input(
+                "Number of Absences",
+                min_value=0,
+                value=0,
+                step=1,
+            )
+
+        submitted = st.form_submit_button("Generate Prediction")
+
+    if submitted:
+        st.warning(
+            """
+            Prediction is not yet available because the final trained model
+            has not been connected to the application.
+            """
+        )
+
+    st.divider()
+
+    st.caption(
+        """
+        This prediction is intended to support professional judgment.
+        It should not be used as the sole basis for academic,
+        disciplinary, or counselling decisions.
+        """
+    )
 
 
 # Display the Model Comparison page.
