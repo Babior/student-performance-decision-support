@@ -244,13 +244,91 @@ elif selected_page == "Data Visualisations":
 
     st.write(
         """
-        This page will display selected charts from the student-performance
-        dataset.
+        Explore selected visualisations from the student-performance dataset.
+        These charts will help users understand patterns in the data used
+        by the decision-support system.
         """
     )
 
-    st.warning("Dataset charts will be added later.")
+    st.info(
+        """
+        Final charts will be added after the team's exploratory data analysis
+        outputs are integrated into the application.
+        """
+    )
 
+    st.subheader("Class Distribution")
+
+    st.write(
+        """
+        This section will show the balance between students classified as
+        likely to pass and students who may require additional academic support.
+        """
+    )
+
+    st.warning("Class-distribution chart pending integration.")
+
+    st.divider()
+
+    st.subheader("Academic and Behavioural Patterns")
+
+    chart_col1, chart_col2 = st.columns(2)
+
+    with chart_col1:
+        st.markdown("### Study Time")
+        st.write(
+            """
+            A chart will show how student study-time categories are distributed
+            across the dataset.
+            """
+        )
+        st.warning("Study-time visualisation pending.")
+
+    with chart_col2:
+        st.markdown("### Absences")
+        st.write(
+            """
+            A chart will show the distribution of student absences and help
+            users understand attendance patterns in the dataset.
+            """
+        )
+        st.warning("Absence visualisation pending.")
+
+    st.divider()
+
+    st.subheader("Performance Relationships")
+
+    relationship_col1, relationship_col2 = st.columns(2)
+
+    with relationship_col1:
+        st.markdown("### Previous Grades")
+        st.write(
+            """
+            This section will display selected relationships between earlier
+            academic results and final student outcomes.
+            """
+        )
+        st.warning("Grade relationship chart pending.")
+
+    with relationship_col2:
+        st.markdown("### Support-Related Factors")
+        st.write(
+            """
+            This section will display selected relationships between student
+            characteristics and academic-support outcomes.
+            """
+        )
+        st.warning("Support-factor chart pending.")
+
+    st.divider()
+
+    st.caption(
+        """
+        Visualisations are intended to help explain the dataset and should
+        not be interpreted as proof that any single characteristic causes
+        academic success or difficulty.
+        """
+    )
 
 # Display the About page.
 elif selected_page == "About":
