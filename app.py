@@ -145,18 +145,97 @@ elif selected_page == "Student Prediction":
     )
 
 
-# Display the Model Comparison page.
 elif selected_page == "Model Comparison":
     st.title("Model Comparison")
 
     st.write(
         """
-        This page will compare the logistic regression, decision tree,
-        and random forest models.
+        Compare the performance of the machine-learning models developed
+        for the student performance decision-support system.
         """
     )
 
-    st.warning("Model results have not yet been connected.")
+    st.info(
+        """
+        Final evaluation results will be displayed here once the trained
+        models and evaluation outputs are integrated into the application.
+        """
+    )
+
+    st.subheader("Models")
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.markdown("### Logistic Regression")
+        st.write(
+            """
+            A baseline classification model that estimates the probability
+            that a student may benefit from additional academic support.
+            """
+        )
+
+    with col2:
+        st.markdown("### Decision Tree")
+        st.write(
+            """
+            A rule-based model that makes predictions by splitting students
+            into groups based on their characteristics.
+            """
+        )
+
+    with col3:
+        st.markdown("### Random Forest")
+        st.write(
+            """
+            An ensemble model that combines multiple decision trees to
+            produce a more stable prediction.
+            """
+        )
+
+    st.divider()
+
+    st.subheader("Evaluation Metrics")
+
+    st.write(
+        """
+        The final models will be compared using the following metrics:
+        """
+    )
+
+    metric_col1, metric_col2, metric_col3 = st.columns(3)
+
+    with metric_col1:
+        st.metric("Support Recall", "Pending")
+        st.metric("Support F1-Score", "Pending")
+
+    with metric_col2:
+        st.metric("Testing Accuracy", "Pending")
+        st.metric("ROC-AUC", "Pending")
+
+    with metric_col3:
+        st.metric("Cross-Validation Mean", "Pending")
+        st.metric("Cross-Validation Std.", "Pending")
+
+    st.caption(
+        """
+        Special attention will be given to recall for students who may
+        require academic support because missing such a student could delay
+        necessary intervention.
+        """
+    )
+
+    st.divider()
+
+    st.subheader("Detailed Results")
+
+    st.warning(
+        """
+        Model comparison tables, confusion matrices, and final evaluation
+        results will appear here after integration with the team's model
+        outputs.
+        """
+    )
 
 
 # Display the Data Visualisations page.
