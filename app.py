@@ -68,14 +68,57 @@ if selected_page == "Home":
 
     st.write(
         """
-        This application helps teachers and school administrators identify
-        students who may benefit from additional academic support.
+        This application supports teachers and school administrators in
+        identifying students who may benefit from additional academic support.
         """
     )
 
+    st.subheader("What this system does")
+
+    st.write(
+        """
+        The system uses student academic, behavioural, family, and support
+        information to estimate whether a student is likely to pass or may
+        benefit from additional academic support.
+        """
+    )
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.markdown("### Student Prediction")
+
+        st.write(
+            """
+            Enter student information and receive a decision-support
+            prediction with an estimated probability.
+            """
+        )
+
+    with col2:
+        st.markdown("### Model Comparison")
+
+        st.write(
+            """
+            Review information about the machine-learning models evaluated
+            during development.
+            """
+        )
+
+    with col3:
+        st.markdown("### Data Visualisations")
+
+        st.write(
+            """
+            Explore selected patterns from the student-performance dataset.
+            """
+        )
+
     st.info(
         """
-        This prediction is intended to support professional judgment.
+        This system is intended to support professional judgment.
+        Predictions should not be used as the sole basis for academic,
+        disciplinary, or counselling decisions.
         """
     )
 
@@ -96,12 +139,11 @@ elif selected_page == "Student Prediction":
         final_model = get_final_model()
         model_metadata = get_final_metadata()
 
-    except Exception as error:
+    except Exception:
         st.error(
             "The prediction model could not be loaded. "
             "Please check the model files and try again."
         )
-        st.exception(error)
         st.stop()
 
     st.info(
@@ -444,12 +486,11 @@ elif selected_page == "Student Prediction":
                     f"{support_probability:.1%}",
                 )
 
-            except Exception as error:
+            except Exception:
                 st.error(
                     "A prediction could not be generated. "
                     "Please check the student information and try again."
                 )
-                st.exception(error)
 
     st.divider()
 
@@ -605,11 +646,10 @@ elif selected_page == "Model Comparison":
             """
         )
 
-    except Exception as error:
+    except Exception:
         st.error(
             "The final model evaluation results could not be displayed."
         )
-        st.exception(error)
 
 
 # Data Visualisations page
@@ -840,11 +880,65 @@ elif selected_page == "Data Visualisations":
             """
         )
 
-    except Exception as error:
+        st.divider()
+
+        # Absence comparison
+        st.subheader("Average Absences by Support Status")
+
+        absence_summary = (
+            student_data
+            .groupby("Support Status")["absences"]
+            .mean()
+            .reset_index()
+        )
+
+        absence_summary.columns = [
+            "Support Status",
+            "Average Absences",
+        ]
+
+        absence_chart = (
+            alt.Chart(absence_summary)
+            .mark_bar()
+            .encode(
+                x=alt.X(
+                    "Support Status:N",
+                    title="Student Outcome",
+                    axis=alt.Axis(
+                        labelAngle=0,
+                        labelLimit=300,
+                    ),
+                ),
+                y=alt.Y(
+                    "Average Absences:Q",
+                    title="Average Number of Absences",
+                ),
+                tooltip=[
+                    "Support Status",
+                    alt.Tooltip(
+                        "Average Absences:Q",
+                        format=".2f",
+                    ),
+                ],
+            )
+        )
+
+        st.altair_chart(
+            absence_chart,
+            width="stretch",
+        )
+
+        st.caption(
+            """
+            This chart compares the average number of absences for students
+            in the two outcome groups.
+            """
+        )
+
+    except Exception:
         st.error(
             "The dataset could not be loaded for visualisation."
         )
-        st.exception(error)
 
 
 # About page
@@ -853,17 +947,67 @@ elif selected_page == "About":
 
     st.write(
         """
-        This system uses machine learning to support the early identification
-        of students who may need additional academic assistance.
+        The Student Performance Decision-Support System is a machine-learning
+        prototype designed to help teachers and school administrators identify
+        students who may benefit from additional academic support.
         """
     )
 
-    st.subheader("Important limitations")
+    st.subheader("Project Purpose")
 
     st.write(
         """
-        The dataset comes from two Portuguese secondary schools.
-        Results may not generalise directly to Ghanaian schools,
+        The system analyses student academic, behavioural, family, and
+        support-related information to produce a prediction and an estimated
+        probability of whether additional academic support may be useful.
+        """
+    )
+
+    st.subheader("Dataset")
+
+    st.write(
+        """
+        The project uses the Portuguese-language portion of the UCI Student
+        Performance Dataset. It contains 649 student records and includes
+        information such as academic results, attendance, study habits,
+        family background, school support, and access to resources.
+        """
+    )
+
+    st.subheader("Machine-Learning Approach")
+
+    st.write(
+        """
+        Three supervised-learning models were evaluated:
+        Logistic Regression, Decision Tree, and Random Forest.
+
+        The final deployed model is the progress-informed Logistic Regression
+        model, which uses academic results available before the final course
+        grade together with other student characteristics.
+        """
+    )
+
+    st.subheader("Responsible Use")
+
+    st.info(
+        """
+        Predictions are intended to support professional judgment and should
+        not be treated as certain outcomes. The system should not be used as
+        the sole basis for academic, disciplinary, or counselling decisions.
+        """
+    )
+
+    st.subheader("Important Limitations")
+
+    st.write(
+        """
+        The dataset comes from two Portuguese secondary schools. The findings
+        may therefore not generalise directly to Ghanaian schools,
         universities, or other educational settings.
+
+        The model is also limited by the variables, sample size, and patterns
+        present in the original dataset. Predictions should always be
+        interpreted together with professional knowledge and additional
+        information about the student.
         """
     )
