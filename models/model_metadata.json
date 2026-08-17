@@ -1,11 +1,28 @@
 {
   "model_name": "logistic_regression",
   "experiment_name": "progress_informed",
-  "threshold": 0.35,
+  "classifier_configuration": {
+    "max_iter": 1000,
+    "class_weight": "balanced",
+    "random_state": 42
+  },
+  "threshold": 0.45,
   "random_state": 42,
+  "test_accuracy": 0.9,
+  "test_precision": 0.6296296296296297,
   "test_recall": 0.85,
-  "test_precision": 0.7083333333333334,
-  "test_f1": 0.7727272727272727,
+  "test_f1": 0.723404255319149,
+  "test_roc_auc": 0.9372727272727273,
+  "confusion_matrix": [
+    [
+      100,
+      10
+    ],
+    [
+      3,
+      17
+    ]
+  ],
   "numeric_features": [
     "age",
     "Medu",
@@ -42,5 +59,8 @@
     "internet",
     "romantic"
   ],
-  "notes": "Selected via team priority order (recall, then F1, then ROC-AUC). Threshold tuned from 0.50 default to 0.35 using cross-validated training predictions. Fairness check shows some recall gap by school and sex \u2014 see Section 5 for details."
+  "target": "needs_support",
+  "positive_class": 1,
+  "target_definition": "needs_support = 1 if G3 < 10 else 0",
+  "notes": "Final model is the progress-informed Logistic Regression with class_weight='balanced'. Threshold 0.45 was selected using training-only cross-validated probabilities from a 5-fold StratifiedKFold with shuffle=True and random_state=42. The held-out test set was used only after the model configuration and threshold were frozen. Fairness checks were rerun for sex, school, and address using the exact final model and threshold."
 }
