@@ -1,12 +1,3 @@
-"""
-src/evaluation.py
-
-Reusable evaluation functions for the tree models and final evaluation
-stage (TEAM_IMPLEMENTATION_GUIDE.md, section 5.4).
-
-Owner: Selorm Kwame Hlodze
-"""
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -22,12 +13,24 @@ from sklearn.metrics import (
 )
 from sklearn.model_selection import StratifiedKFold, cross_validate
 
-from src.config import RANDOM_STATE, CV_FOLDS, DEFAULT_CLASSIFICATION_THRESHOLD, POSITIVE_CLASS
+from src.config import (
+    RANDOM_STATE,
+    CV_FOLDS,
+    DEFAULT_CLASSIFICATION_THRESHOLD,
+    POSITIVE_CLASS,
+)
 
 
-def evaluate_classifier(pipeline, X_train, X_test, y_train, y_test,
-                         experiment_name, model_name,
-                         threshold=DEFAULT_CLASSIFICATION_THRESHOLD):
+def evaluate_classifier(
+    pipeline,
+    X_train,
+    X_test,
+    y_train,
+    y_test,
+    experiment_name,
+    model_name,
+    threshold=DEFAULT_CLASSIFICATION_THRESHOLD,
+):
 
     pipeline.fit(X_train, y_train)
 
@@ -69,7 +72,9 @@ def cross_validate_classifier(pipeline, X_train, y_train, primary_metric="recall
 
     scoring = {"recall": "recall", "f1": "f1", "roc_auc": "roc_auc"}
 
-    cv_results = cross_validate(pipeline, X_train, y_train, cv=cv, scoring=scoring, n_jobs=-1)
+    cv_results = cross_validate(
+        pipeline, X_train, y_train, cv=cv, scoring=scoring, n_jobs=-1
+    )
 
     summary = {
         "recall_mean": cv_results["test_recall"].mean(),
@@ -107,29 +112,55 @@ def compare_model_results(results_list):
     return df
 
 
-def evaluate_subgroups(pipeline, X_test, y_test, subgroup_column, group_name,
-                        threshold=DEFAULT_CLASSIFICATION_THRESHOLD, min_group_size=10):
+def evaluate_subgroups(
+    pipeline,
+    X_test,
+    y_test,
+    subgroup_column,
+    group_name,
+    threshold=DEFAULT_CLASSIFICATION_THRESHOLD,
+    min_group_size=10,
+):
 
     probs = pipeline.predict_proba(X_test)[:, 1]
     preds = (probs >= threshold).astype(int)
 
-    df = pd.DataFrame({
-        "group": subgroup_column.values,
-        "y_true": y_test.values,
-        "y_pred": preds,
-    })
+    df = pd.DataFrame(
+        {
+            "group": subgroup_column.values,
+            "y_true": y_test.values,
+            "y_pred": preds,
+        }
+    )
 
     rows = []
     for group_value, group_df in df.groupby("group"):
-        rows.append({
-            "subgroup_variable": group_name,
-            "group": group_value,
-            "count": len(group_df),
-            "accuracy": accuracy_score(group_df["y_true"], group_df["y_pred"]),
-            "support_precision": precision_score(group_df["y_true"], group_df["y_pred"], pos_label=POSITIVE_CLASS, zero_division=0),
-            "support_recall": recall_score(group_df["y_true"], group_df["y_pred"], pos_label=POSITIVE_CLASS, zero_division=0),
-            "support_f1": f1_score(group_df["y_true"], group_df["y_pred"], pos_label=POSITIVE_CLASS, zero_division=0),
-            "low_sample_warning": len(group_df) < min_group_size,
-        })
+        rows.append(
+            {
+                "subgroup_variable": group_name,
+                "group": group_value,
+                "count": len(group_df),
+                "accuracy": accuracy_score(group_df["y_true"], group_df["y_pred"]),
+                "support_precision": precision_score(
+                    group_df["y_true"],
+                    group_df["y_pred"],
+                    pos_label=POSITIVE_CLASS,
+                    zero_division=0,
+                ),
+                "support_recall": recall_score(
+                    group_df["y_true"],
+                    group_df["y_pred"],
+                    pos_label=POSITIVE_CLASS,
+                    zero_division=0,
+                ),
+                "support_f1": f1_score(
+                    group_df["y_true"],
+                    group_df["y_pred"],
+                    pos_label=POSITIVE_CLASS,
+                    zero_division=0,
+                ),
+                "low_sample_warning": len(group_df) < min_group_size,
+            }
+        )
 
     return pd.DataFrame(rows).sort_values("group").reset_index(drop=True)
